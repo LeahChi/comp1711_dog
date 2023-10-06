@@ -1,0 +1,12 @@
+    1  ls
+    2  unzip week1data.zip 
+    3  rm week1data.zip 
+    4  history
+    5  cat data1
+    6  cat data1.txt
+    7  ls
+    8  cat *.txt
+    9  grep "Bowe" *.txt
+   10  grep "Blondie"*.txt
+   11  grep "Nelly" *.txt
+   12  history > notes.txt

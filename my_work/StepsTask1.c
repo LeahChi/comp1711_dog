@@ -10,7 +10,12 @@ typedef struct {
 }FITNESS_DATA;
 
 // Define any additional variables here
+    FITNESS_DATA file_data;
+    int records;
+    int no_of_loops = 0;
 
+    char line[100]; //string to hold data
+    char *sp; //string pointer
 
 
 // This is your helper function. Do not change it in any way.
@@ -54,13 +59,6 @@ int main()
         exit(1);
     }
 
-
-    FITNESS_DATA file_data;
-    int records;
-    int no_of_loops = 0;
-
-    char line[100]; //string to hold data
-    char *sp; //string pointer
     while(fgets(line, 100, file)!=NULL)//looping through each line in file
     {
         records++;

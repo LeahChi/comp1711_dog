@@ -26,18 +26,28 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
 }
 
 
+
 int main() {
 
     char filename[100];
+    char line[100]; //holds data
+    //char line *sp; //string pointer
+    //bool is_valid = true; //if file valid
+
     printf("Please enter the name of the data file: ");
     scanf("%s",filename);
 
     FILE *input = fopen(filename, "r");
         if (!input)
         {
-            printf("Error: File could not be opened\n");
+            printf("Error: invalid file\n");
             return 1;
         }
+
+    //invalid file if not in 2023-12-30,09:30,598 format
+
+
+
 
 
 }

@@ -14,7 +14,7 @@ typedef struct {
 FitnessData file_data;
     int records;
     int no_of_loops = 0;
-    int amount_of_commas = 0;
+    int num_of_commas = 0;
     int is_valid = 1; //1 = valid, 0= not valid
 
     char line[100]; //string to hold data
@@ -58,32 +58,29 @@ int main() {
 
     while(fgets(line, 100, file)!=NULL)//looping through each line in file
     {
-        records++;
+        //records++;
+        num_of_commas = 0; //have to reset the #
         if (records!=0)
         {
             for (int i = 0; i < strlen(line); i++) //checks if line has 2 commas
             {
                 if (line[i] == ',')
                 {
-                    amount_of_commas ++;
+                    num_of_commas ++;
                 }
-            }
-            amount_of_commas = 0; //have to reset the #
 
-            if(amount_of_commas != 2)
+                if(num_of_commas != 2)
             {
                 is_valid = 0;
+                break;
+            }
+
             }
 
         }
-        
-        if(is_valid==0)
-        {
-            printf("Error: invalid file\n");
-            return 1;
-        }
+        records ++;
     }
-    if (records == 0) //checks to see if file is empty
+    if (records == 0 || is_valid == 0) //checks to see if file is empty
     {
         printf("Error: invalid file\n");
         return 1;

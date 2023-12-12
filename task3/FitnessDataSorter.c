@@ -15,7 +15,7 @@ FitnessData file_data;
     int records;
     int no_of_loops = 0;
     int num_of_commas = 0;
-    int is_valid = 1; //1 = valid, 0= not valid
+    int is_valid = 1; // >1 = not valid
 
     char line[100]; //string to hold data
     char *sp; //string pointer
@@ -58,10 +58,10 @@ int main() {
 
     while(fgets(line, 100, file)!=NULL)//looping through each line in file
     {
+        printf("line: %s", line); //to check
         //records++;
         num_of_commas = 0; //have to reset the #
-        if (records!=0)
-        {
+
             for (int i = 0; i < strlen(line); i++) //checks if line has 2 commas
             {
                 if (line[i] == ',')
@@ -69,18 +69,17 @@ int main() {
                     num_of_commas ++;
                 }
 
-                if(num_of_commas != 2)
-            {
-                is_valid = 0;
-                break;
+                printf("Num of commas: %d\n", num_of_commas); //to check
+                
+                if(num_of_commas != 2){
+                is_valid ++;
+                break;}
             }
 
-            }
-
-        }
         records ++;
     }
-    if (records == 0 || is_valid == 0) //checks to see if file is empty
+    printf("Final Records: %d, Final Is Valid: %d\n", records, is_valid); //to check
+    if (records == 0 || is_valid > 1) //checks to see if file is empty
     {
         printf("Error: invalid file\n");
         return 1;

@@ -12,10 +12,8 @@ typedef struct {
 //PLAN shove each line into an array delimited by the comma and then compare
 
 FitnessData file_data;
-    int records;
+    int records = 0;
     int no_of_loops = 0;
-    int num_of_commas = 0;
-    int is_valid = 1; // >1 = not valid
 
     char line[100]; //string to hold data
     char *sp; //string pointer
@@ -37,7 +35,27 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
     }
 }
 
-
+int isLineValid(char *date, char *time, int steps)
+{
+    return strlen(date) == 10 && strlen(time) == 5 && steps >0;
+}
+//used logic from: https://www.programiz.com/dsa/bubble-sort
+void bubbleSort(FitnessData *data, int records) 
+{
+    for (int i = 0; i < records - 1; i++) 
+    {
+        for (int j = 0; j < records - i - 1; j++) 
+        {
+            if (data[j].steps < data[j + 1].steps) 
+            {
+                // Swap data[j] and data[j+1]
+                FitnessData temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+            }
+        }
+    }
+}
 
 int main() {
 
@@ -56,59 +74,91 @@ int main() {
             return 1;
         }
 
+    
+
     while(fgets(line, 100, file)!=NULL)//looping through each line in file
     {
-        printf("line: %s", line); //to check
-        //records++;
-        num_of_commas = 0; //have to reset the #
-
-            for (int i = 0; i < strlen(line); i++) //checks if line has 2 commas
-            {
-                if (line[i] == ',')
-                {
-                    num_of_commas ++;
-                }
-
-                printf("Num of commas: %d\n", num_of_commas); //to check
-                
-                if(num_of_commas != 2){
-                is_valid ++;
-                break;}
-            }
-
         records ++;
+
+        sp = strtok(line,",");
+        if (!sp)
+        {
+            printf("Error: invalid file\n");
+            //fclose(file);
+            return 1;
+        }
+
+        strcpy(file_data.date,sp);
+
+        sp = strtok(NULL, ",");
+        if (!sp)
+        {
+            printf("Error: invalid file\n");
+            //fclose(file);
+            return 1;
+        }
+        strcpy(file_data.time,sp);
+
+        sp = strtok(NULL, ",");
+        if (!sp)
+        {
+            printf("Error: invalid file\n");
+            //fclose(file);
+            return 1;
+        }
+        //file_data.steps = atoi(sp);
+
+        if(!isLineValid(file_data.date, file_data.time, file_data.steps)) 
+        {
+            printf("Error: invalid file format\n");
+            //fclose(file);
+            return 1;
+        }
+
+
     }
-    printf("Final Records: %d, Final Is Valid: %d\n", records, is_valid); //to check
-    if (records == 0 || is_valid > 1) //checks to see if file is empty
+
+    FitnessData *data = malloc(records * sizeof(FitnessData));
+
+    fseek(file,0,SEEK_SET);
+
+    int i = 0;
+    while (fgets(line, 100, file) != NULL) {
+        sp = strtok(line, ",");
+        strcpy(data[i].date, sp);
+
+        sp = strtok(NULL, ",");
+        strcpy(data[i].time, sp);
+
+        sp = strtok(NULL, ",");
+        data[i].steps = atoi(sp);
+
+        i++;
+    }
+
+    bubbleSort(data, records);
+
+    // Write out the sorted data to a new file
+    char outputFilename[100];
+    strcpy(outputFilename, filename);
+    strcat(outputFilename, ".tsv");
+
+    FILE *outputFile = fopen(outputFilename, "w");
+    if (!outputFile) 
     {
         printf("Error: invalid file\n");
         return 1;
     }
 
-    //invalid file if not in 2023-12-30,09:30,598 format
-    // check each record, split into 3 parts
-    // 1st contains hyphem, 2nd contains : , 3rd is an integer
-
-    /* while(fgets(line, 100, file)!=NULL)//fgets to get one line of data
+     for (i = 0; i < records; i++) 
     {
-        if(no_of_loops<3)
-        {
-        sp = strtok(line, ","); //stops when reaches comma
-        strcpy(file_data.date, sp);
+        fprintf(outputFile, "%s\t%s\t%d\n", data[i].date, data[i].time, data[i].steps);
+    }
 
-        sp = strtok(NULL, ",");
-        strcpy(file_data.time, sp);
-        
-        sp = strtok(NULL, ",");
-        file_data.steps = atoi(sp);// a to i(nt) ->str to int
-        
-        printf("\n%s/%s/%d", file_data.date,file_data.time,file_data.steps);
-        no_of_loops++;
-        }
-    }*/
 
 
     fclose(file);
+    fclose(outputFile);
     return 0;
 
 }
